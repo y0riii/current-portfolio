@@ -32,14 +32,26 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 ## Deploy on Vercel
 
 Import the repo at [vercel.com/new](https://vercel.com/new). Vercel auto-detects Next.js, so
-the defaults are correct — no build command, output directory, or `vercel.json` overrides needed:
+leave the build and output settings on their defaults:
 
-| Setting          | Value           |
-| ---------------- | --------------- |
-| Framework Preset | Next.js         |
-| Build Command    | `npm run build` |
-| Install Command  | `npm install`   |
-| Output Directory | `.next`         |
+| Setting          | Value                        | Set by       |
+| ---------------- | ---------------------------- | ------------ |
+| Framework Preset | Next.js                      | auto-detect  |
+| Build Command    | `npm run build`              | auto-detect  |
+| Output Directory | `.next`                      | auto-detect  |
+| Install Command  | `npm ci --include=dev`       | `vercel.json`|
+
+The install command is pinned in [`vercel.json`](./vercel.json) on purpose. Vercel restores a
+cached `node_modules` between builds, and a plain `npm install` can leave stale packages in
+place — which once produced a build failure with dependency versions that no longer matched
+this repo's lockfile. `npm ci` deletes `node_modules` first and installs strictly from
+`package-lock.json`, so every build starts from the exact locked tree. `--include=dev` is
+explicit because Vercel builds with `NODE_ENV=production`, and Tailwind, PostCSS and
+TypeScript are all devDependencies needed at build time.
+
+For the same reason, the `three` / `three-globe` / `@react-three/*` versions are pinned exactly
+(no `^`) in `package.json`. Those packages have inaccurate peer ranges and drift into
+incompatible combinations. Change them together and deliberately, not via a range.
 
 ### Environment variables
 
