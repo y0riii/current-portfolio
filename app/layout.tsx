@@ -36,7 +36,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    // next-themes sets the theme class on <html> from an inline script that runs
+    // before hydration, so the server markup intentionally differs here.
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}><ThemeProvider
             attribute="class"
             defaultTheme="dark"

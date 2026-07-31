@@ -5,13 +5,14 @@ import { BackgroundGradientAnimation } from "./GradientBg";
 import { GlobeDemo } from "./GridGlobe"
 import dynamic from "next/dynamic";
 import { useState } from "react";
-import animationData from "@/data/confetti.json"
 import MagicButton from "./MagicButton";
 import { IoCopyOutline } from "react-icons/io5"
 
-// react-lottie pulls in lottie-web, which touches `document` at import time and
-// crashes the prerender on the server. Load it in the browser only.
-const Lottie = dynamic(() => import("react-lottie"), { ssr: false });
+// react-lottie reaches for `document` at import time, so it can only be loaded
+// in the browser.
+const ConfettiAnimation = dynamic(() => import("./ConfettiAnimation"), {
+  ssr: false,
+});
 
 export const BentoGrid = ({
   className,
@@ -132,14 +133,7 @@ export const BentoGridItem = ({
           {id === 6 && (
             <div className="mt-5 relative">
               <div className={`absolute -bottom-5 right-0`}>
-                <Lottie options={{
-                  loop: copied,
-                  autoplay:copied,
-                  animationData: animationData,
-                  rendererSettings: {
-                    preserveAspectRatio: 'xMidYMid slice'
-                  }
-                }} />
+                <ConfettiAnimation play={copied} />
               </div>
               <MagicButton title={copied ? "Email copied" : "Copy my Email"} icon={<IoCopyOutline />} position="left" otherClasses="!bg-[#161a31]" handleClick={handleCopy} />
             </div>
