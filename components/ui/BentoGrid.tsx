@@ -3,11 +3,15 @@
 import { cn } from "@/utils/cn";
 import { BackgroundGradientAnimation } from "./GradientBg";
 import { GlobeDemo } from "./GridGlobe"
-import Lottie from "react-lottie";
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import animationData from "@/data/confetti.json"
 import MagicButton from "./MagicButton";
 import { IoCopyOutline } from "react-icons/io5"
+
+// react-lottie pulls in lottie-web, which touches `document` at import time and
+// crashes the prerender on the server. Load it in the browser only.
+const Lottie = dynamic(() => import("react-lottie"), { ssr: false });
 
 export const BentoGrid = ({
   className,
